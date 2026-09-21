@@ -1,0 +1,15 @@
+package hr.mentalblue.retadnevnik;
+import android.graphics.*;
+import android.graphics.pdf.PdfDocument;
+import org.json.*;
+import java.io.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+class Report {
+    static byte[] create(JSONObject store)throws Exception {PdfDocument pdf=new PdfDocument();Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);int pageNo=1;PdfDocument.Page page=pdf.startPage(new PdfDocument.PageInfo.Builder(595,842,pageNo).create());Canvas c=page.getCanvas();p.setColor(Color.rgb(16,41,61));p.setTextSize(30);c.drawText("Reta Log",40,60,p);p.setTextSize(12);c.drawText("Personal journal report · "+LocalDate.now(),40,85,p);c.drawText("Private health information",40,106,p);JSONObject profile=store.optJSONObject("profile");if(profile!=null)c.drawText(profile.optString("name"),40,130,p);
+        JSONArray entries=store.getJSONArray("entries");ArrayList<JSONObject> list=new ArrayList<>();for(int i=0;i<entries.length();i++)list.add(entries.getJSONObject(i));list.sort((a,b)->a.optString("at").compareTo(b.optString("at")));
+        if(!list.isEmpty()){long end=System.currentTimeMillis(),start=Instant.parse(list.get(0).getString("at")).toEpochMilli();end=Math.max(end,start+86400000L);double half=store.optJSONObject("settings")==null?6:store.getJSONObject("settings").optDouble("half",6),max=.1;double[] vals=new double[301];for(int i=0;i<vals.length;i++){long t=start+(long)((end-start)*(i/300.0));double v=0;for(JSONObject e:list){long et=Instant.parse(e.getString("at")).toEpochMilli();if(et<=t&&e.optString("status","taken").equals("taken"))v+=e.getDouble("mg")*Math.pow(.5,(t-et)/(half*86400000));}vals[i]=v;max=Math.max(max,v);}p.setColor(Color.rgb(228,238,243));c.drawRect(40,165,555,335,p);Path line=new Path();for(int i=0;i<vals.length;i++){float x=40+i*515f/300,y=325-(float)(vals[i]/max*145);if(i==0)line.moveTo(x,y);else line.lineTo(x,y);}p.setColor(Color.rgb(8,126,136));p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(2);c.drawPath(line,p);p.setStyle(Paint.Style.FILL);p.setColor(Color.rgb(16,41,61));p.setTextSize(10);c.drawText("Model estimate (mg), not a measured blood level. Half-life: "+half+" days.",40,355,p);c.drawText("Simplified instantaneous absorption; display sampled for this report.",40,371,p);}
+        int y=405;p.setTextSize(12);c.drawText("Recorded entries",40,y,p);y+=25;DateTimeFormatter fmt=DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm",Locale.ENGLISH);for(JSONObject e:list){if(y>785){pdf.finishPage(page);page=pdf.startPage(new PdfDocument.PageInfo.Builder(595,842,++pageNo).create());c=page.getCanvas();y=50;}String row=Instant.parse(e.getString("at")).atZone(ZoneId.systemDefault()).format(fmt)+"   |   "+e.getDouble("mg")+" mg   |   "+e.optString("status","taken");p.setTextSize(11);c.drawText(row,40,y,p);y+=18;String site=e.optString("site","");if(!site.isEmpty()){p.setTextSize(10);c.drawText("Site: "+site.substring(0,Math.min(85,site.length())),48,y,p);y+=17;}}pdf.finishPage(page);ByteArrayOutputStream out=new ByteArrayOutputStream();pdf.writeTo(out);pdf.close();return out.toByteArray();}
+}

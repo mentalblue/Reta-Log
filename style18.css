@@ -1,0 +1,42 @@
+/* Scoped comparison design; Classic keeps its navy cards. */
+body:not(.depth) .card{box-shadow:0 1px 2px #07182718!important}
+body.depth .card{box-shadow:0 12px 25px #07182730,inset 0 1px 0 #ffffff38,0 2px 3px #07182720!important;border-top-color:#ffffff65!important}
+body.new-design{--bg:#edf2f6;--ink:#182d43;--muted:#52687b;background:var(--bg)}
+body.new-design.dark{--bg:#091724;--ink:#edf6fc;--muted:#b2c4d3}
+.new-design .card:not(.hero){--card:#f8fafc;--ink:#182d43;--muted:#52687b;--line:#d6e1ea;--soft:#e4edf4;--accent-readable:var(--light-card-accent,#087580);--accent:var(--accent-readable);background:linear-gradient(145deg,#ffffff,#f0f5f9)!important;color:var(--ink);border:1px solid var(--line)}
+.new-design.dark .card:not(.hero){--card:#172d41;--ink:#edf6fc;--muted:#b2c4d3;--line:#355064;--soft:#243f56;--accent-readable:var(--card-accent,#78ddd5);--accent:var(--accent-readable);background:linear-gradient(145deg,#1d364c,#14283c)!important}
+.new-design .card:not(.hero){--bg:#edf2f6}.new-design.dark .card:not(.hero){--bg:#0f2436}
+.new-design .card:not(.hero) .eyebrow{color:var(--muted)!important}
+.new-design:not(.dark) .card .badge{color:#176d65!important;background:#dceeea}
+.new-design:not(.dark) .card .status-unopened{color:#176847!important}
+.new-design:not(.dark) .card .status-in-use{color:#926000!important}
+.new-design:not(.dark) .card .status-empty,.new-design:not(.dark) .card .low-amount{color:#a92948!important}
+.new-design .graph-surface,.new-design .graph-surface:not(.hero){background:var(--card)!important;background-image:none!important}
+.card .orb{pointer-events:none}
+.new-design .orb{width:130px;height:130px;border:0!important;border-radius:24px!important;transform:rotate(30deg);background:linear-gradient(140deg,#8de4da20,transparent)!important;box-shadow:none!important;top:-75px;right:-35px}
+.daily-pair,.toolkit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.daily-pair .card{min-width:0;padding:16px;margin-bottom:14px}
+.target-tile h3{font-size:15px}.target-tile .big{font-size:34px;font-variant-numeric:tabular-nums;font-weight:750}.target-tile .big small{font-size:15px}
+.target-tile .chipbar{flex-wrap:wrap}.target-tile .chipbar button{font-size:12px;padding:6px;min-height:48px}
+.target-tile progress{width:100%;height:8px;accent-color:#65c7a4;border:0}
+.card .status-low,.card .low-label{color:#ff9daf!important}.new-design:not(.dark) .card .status-low,.new-design:not(.dark) .card .low-label{color:#a92948!important}
+.card .status-almost{color:#f3c474!important}.new-design:not(.dark) .card .status-almost{color:#926000!important}
+.card .status-met{color:#83dfbc!important}.new-design:not(.dark) .card .status-met{color:#176847!important}
+.toolkit-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px;text-align:left;min-height:92px;margin:0}
+.weight-spark{width:100%;height:42px;fill:var(--accent)}
+.series-toggle{font-size:12px!important;padding:6px 9px!important;border:1px solid var(--line)!important;min-height:48px}.series-off{opacity:.45;text-decoration:line-through}
+.bac-status{padding:12px;border:1px solid currentColor;border-radius:14px;margin:12px 0}
+.model-settings18 #half{width:50%;display:inline-block;margin-right:8px}.model-settings18 #half+button{width:auto;display:inline-block}
+button,.icon-button{min-height:48px;min-width:48px}.icon-button{min-width:48px}.hint{line-height:1.5}.check{min-height:48px}.swatch{width:48px!important;height:48px!important}
+#app>nav{display:flex!important;flex-wrap:nowrap!important;min-height:64px!important;height:auto!important;padding:8px!important;gap:2px!important}
+#app>nav button{min-width:0;flex:1;padding:8px 4px;min-height:48px;gap:4px}
+#app>nav button .icon{flex-shrink:0;width:24px;height:24px}
+.new-design #app>nav button{flex-direction:column!important;font-size:11px;height:auto!important;min-height:56px;padding:6px 4px!important;overflow:visible!important}
+.new-design #app>nav button span{font-size:11px!important;line-height:14px!important}
+.full-chart #app>nav,.full-weight #app>nav{display:none!important}
+.large-text .daily-pair,.large-text .home-pair{grid-template-columns:1fr!important}
+.large-text #app>nav button span{display:none!important}
+.new-design #app>nav button span{display:block!important;white-space:nowrap}
+.new-design #app>nav button.active{flex:1!important}
+@media(max-width:340px){.daily-pair,.toolkit-grid{grid-template-columns:1fr}.new-design #app>nav button span{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

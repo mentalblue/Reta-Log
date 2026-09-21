@@ -1,0 +1,15 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'hr.mentalblue.retadnevnik'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'hr.mentalblue.retadnevnik'
+        minSdk 26
+        targetSdk 35
+        versionCode 28
+        versionName '2.0.1'
+    }
+    signingConfigs { prototype { if (System.getenv('RETA_KEYSTORE')) { storeFile file(System.getenv('RETA_KEYSTORE')); storePassword System.getenv('RETA_KEYSTORE_PASSWORD'); keyAlias System.getenv('RETA_KEY_ALIAS'); keyPassword System.getenv('RETA_KEY_PASSWORD') } } }
+    buildTypes { debug { if (System.getenv('RETA_KEYSTORE')) signingConfig signingConfigs.prototype } release { if (System.getenv('RETA_KEYSTORE')) signingConfig signingConfigs.prototype } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
