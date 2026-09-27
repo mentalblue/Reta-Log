@@ -1,6 +1,6 @@
-# Reta Log 2.0.1
+# Reta Log 2.0.23
 
-Offline Android journal. Package `hr.mentalblue.retadnevnik`, versionCode **28**, additive JSON store **schema 2**. Android 8+; native Health Connect requires Android 14+.
+Offline Android journal. Package `hr.mentalblue.retadnevnik`, versionCode **50**, additive JSON store **schema 2**. Android 8+; native Health Connect requires Android 14+.
 
 ## UX Architecture V2
 
@@ -19,6 +19,16 @@ Local manual activities, notes and equipment use an **optional `uxV2.version=1` 
 Classic retains its original rendering and routes, except for the release version label. The new modules delegate to the existing forms, charts and transaction/Undo code. See **UX-V2-MAP.md** and **VERIFICATION-2.0.1.md**.
 
 Login and cloud sync remain intentionally out of scope by prior request. Activities and steps are manual; no Health Connect activity import is claimed. Inventory/BAC warnings are in-app; existing user-created native reminders remain available.
+
+## Plan / Titration (2.0.14)
+
+Quick Add separates logging an injection, scheduling one future occurrence, and creating a Plan / Titration. The guided four-step flow stores user-defined plans and occurrences in an optional `uxV2.titration.version=1` extension, separately from actual injection entries. Weekly, multi-slot, every-X-days and custom weekday schedules, unequal doses, bounded duration and user-defined phases are supported. Upcoming occurrences appear in Today and Progress → Reta. A completed occurrence links to the existing injection record; only that record affects the model and supply accounting. Plan reminders use the existing native reminder receiver and never mark a dose complete.
+
+The plan preview and model calculations are mathematical planning aids; the app does not recommend or choose a dose or schedule. Generated schedule logic checks live in `tests/plan214.cjs`.
+
+## Camera pulse estimate (2.0.15)
+
+Tap the heart control to start the camera measurement. The live trace is drawn from camera samples; the estimator evaluates the red, green and blue optical channels, tolerates lower skin coverage, and rejects flat, noisy or interrupted signals. The result is saved only after repeated estimates agree. This is an informational optical estimate, not an ECG or clinical measurement.
 
 ## 2.0.1 update
 
@@ -45,7 +55,7 @@ RETA_BUILD_TOOLS=/absolute/path/to/build-tools/35.0.0
 RETA_ECJ_JAR=/absolute/path/to/ecj.jar
 ```
 
-Run `bash build-direct.sh`. Output: `build-direct/Reta-Log-2.0.1.apk`. The private signing key is excluded from this GitHub-ready ZIP. Keep it separately for future compatible updates.
+Run `bash build-direct.sh`. Output: `build-direct/Reta-Log-2.0.23.apk`. The private signing key is excluded from this GitHub-ready ZIP. Keep it separately for future compatible updates.
 
 ## Tests
 
@@ -66,7 +76,7 @@ For pixel comparison with 1.9.0, set `RETA_BASELINE_ASSETS` to that version’s 
 
 Before upgrading, use **Profile → Backups & calendar import → Export complete backup**. Keep that backup private. Install the APK over the existing app; do not uninstall for an upgrade.
 
-Returning to Classic in 2.0.1 keeps all records, including V2 records (these remain accessible again when V2 is re-enabled and in full backups). Do not downgrade the APK to return to Classic. Older 1.9.0 UI cannot display the new activity/note/equipment extension; round-trip editing by older binaries is not certified. The design switch is reversible without changing the database. The original 1.7.5 code was checkpointed. Older app validation may reject new timestamp opening dates and side-specific circumferences. Keep a **pre-upgrade backup** for returning to the old app. Android normally blocks lower versionCodes; do not clear data or uninstall before preserving old and current backups. Reverting code is separate from reverting the live database.
+Returning to Classic in 2.0.14 keeps all records, including V2 records (these remain accessible again when V2 is re-enabled and in full backups). Do not downgrade the APK to return to Classic. Older 1.9.0 UI cannot display the new activity/note/equipment extension; round-trip editing by older binaries is not certified. The design switch is reversible without changing the database. The original 1.7.5 code was checkpointed. Older app validation may reject new timestamp opening dates and side-specific circumferences. Keep a **pre-upgrade backup** for returning to the old app. Android normally blocks lower versionCodes; do not clear data or uninstall before preserving old and current backups. Reverting code is separate from reverting the live database.
 
 ## Limits
 
@@ -75,3 +85,27 @@ Actual Health Connect/calendar providers, OEM gesture bars, PDF rendering, notif
 Health Connect history depends on permission and is limited to approximately 20,000 records per request. Calendar reads cap at 10,000 events and report partial results. Source deletions are not mirrored. Nothing is automatically uploaded.
 
 Equipment images are generic AI illustrations, not product compatibility evidence. Legal notices remain drafts for this private build. Nutrition presets and model estimates are not treatment or dosing recommendations.
+
+## 2.0.16 repairs
+Removed the undefined global render hook that blocked navigation, pulse card refresh and plan confirmation. Slot field edits retain their DOM and scroll; structural edits restore the actual wizard scroll container. Duration has one weeks display. Task values share status typography/accent. Detached Journal scroll callbacks cannot change the selected date. Full browser regression: `tests/fixes217.cjs`.
+
+## 2.0.17 Plan Back behavior
+System Back and the in-flow Back control now move one step backward in Plan / Titration. Back from Dose returns to the plan-type choice and resumes the current draft when continued.
+
+## 2.0.19 Unified Quick Add
+Quick Add presents injection, scheduling, planning and daily logs as one full-width list of matching icon cards with short descriptions. Protein uses a muscle icon. Existing entry editors remain in use.
+
+## 2.0.19 Pulse measurement
+Restyled the camera pulse screen to follow the app's dark/light surfaces and selected accent. The live trace highlights detected optical pulse peaks; it is explicitly labelled camera PPG, not ECG. A brief native vibration is synchronized to repeated beats only after the optical signal passes the app's pulse validation. Removing the camera preview from the UI no longer terminates incoming camera frames. Automated pulse bridge regression: `tests/pulse219.cjs`.
+
+## 2.0.20 Pulse contact and feedback
+Quick Add uses two designed cards per row on standard phones, with a single column only on narrow screens. The camera preview is visible through the heart, which changes to the selected contact state only when the native Camera2 classifier detects fingertip coverage. No-contact frames reset the optical buffer and cannot produce a saved estimate or tactile beat. Short vibration pulses follow validated repeated optical peaks. The waveform is a compact gridded camera PPG trace; it is not an ECG.
+
+## 2.0.21 corrections
+Two-column Quick Add at all phone widths; native installed version and expandable feature summary in Settings; stronger 40 ms native pulse vibrations following stable optical peaks; explicit Save / Don’t save before committing camera results.
+
+## 2.0.22 Quick Add layout and Back
+Rebalanced two-column cards, no word splitting, dedicated fixed heading and scroll area, unified icons. Back from all 11 entry actions returns to Quick Add and restores its scroll position; Plan Back retains step-by-step navigation. Layout checked at 320–412 px and at 30% larger text.
+
+## 2.0.23 Store description
+Added structured English Google Play listing copy to the expandable version card in Settings, plus English and Croatian store listing text in PLAY-STORE-2.0.23.md.
